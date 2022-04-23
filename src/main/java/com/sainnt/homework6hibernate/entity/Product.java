@@ -21,6 +21,8 @@ public class Product {
     @Column(nullable = false)
     private String name;
 
+    private long price;
+
 
     @Override
     public boolean equals(Object o) {

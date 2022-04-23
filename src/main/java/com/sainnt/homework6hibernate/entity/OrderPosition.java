@@ -13,14 +13,14 @@ import java.util.Objects;
 @Table(name = "order_positions")
 public class OrderPosition {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
     @OneToOne
     @JoinColumn(name = "product_id",nullable = false)
     private Product product;
     @Column(nullable = false)
     private int amount;
-    @Column(nullable = false)
+    @Column(name = "product_price",nullable = false)
     private long productPrice;
 
     @ManyToOne

@@ -20,13 +20,13 @@ public class Order {
     @ToString.Exclude
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
-    @OneToMany(fetch = FetchType.EAGER)
-    private List<OrderPosition> product;
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "id")
+    private List<OrderPosition> orderPositions;
     @Column(nullable = false)
     private Date date;
 
     public long getOrderPrice() {
-        return product.stream()
+        return orderPositions.stream()
                 .map(order -> order.getProductPrice() * order.getAmount())
                 .reduce(0L, Long::sum);
     }
