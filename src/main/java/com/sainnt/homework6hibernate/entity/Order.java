@@ -1,0 +1,32 @@
+package com.sainnt.homework6hibernate.entity;
+
+import lombok.*;
+
+import javax.persistence.*;
+import java.util.Date;
+import java.util.List;
+
+@Getter
+@Setter
+@ToString
+@RequiredArgsConstructor
+@Entity
+public class Order {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private long id;
+    @ManyToOne
+    @ToString.Exclude
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
+    @OneToMany(fetch = FetchType.EAGER)
+    private List<OrderPosition> product;
+    @Column(nullable = false)
+    private Date date;
+
+    public long getOrderPrice() {
+        return product.stream()
+                .map(order -> order.getProductPrice() * order.getAmount())
+                .reduce(0L, Long::sum);
+    }
+}
