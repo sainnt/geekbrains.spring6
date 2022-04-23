@@ -10,6 +10,7 @@ import java.util.Objects;
 @ToString
 @RequiredArgsConstructor
 @Entity
+@Table(name = "order_positions")
 public class OrderPosition {
     @Id
     @GeneratedValue
