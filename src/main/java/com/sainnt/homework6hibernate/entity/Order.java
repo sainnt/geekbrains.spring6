@@ -15,7 +15,7 @@ import java.util.List;
 public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
     @ManyToOne
     @ToString.Exclude
     @JoinColumn(name = "user_id", nullable = false)
@@ -25,7 +25,7 @@ public class Order {
     @Column(nullable = false)
     private Date date;
 
-    public long getOrderPrice() {
+    public Long getOrderPrice() {
         return orderPositions.stream()
                 .map(order -> order.getProductPrice() * order.getAmount())
                 .reduce(0L, Long::sum);

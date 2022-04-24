@@ -14,15 +14,16 @@ import java.util.Objects;
 public class OrderPosition {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
     @OneToOne
     @JoinColumn(name = "product_id",nullable = false)
     private Product product;
     @Column(nullable = false)
     private int amount;
     @Column(name = "product_price",nullable = false)
-    private long productPrice;
+    private Long productPrice;
 
+    @ToString.Exclude
     @ManyToOne
     @JoinColumn(name = "order_id")
     private Order order;
@@ -32,7 +33,7 @@ public class OrderPosition {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         OrderPosition that = (OrderPosition) o;
-        return id == that.id;
+        return Objects.equals(id, that.id);
     }
 
     @Override
