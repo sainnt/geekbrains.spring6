@@ -61,6 +61,16 @@ public class OrderService {
         return mapToDto(order);
     }
 
+    public OrderDto getOrderById(long orderId){
+        Order order = orderRepository.load(orderId);
+        if(order == null)
+            throw new NotFoundException(String.format("Order with id %d not found",orderId));
+        return mapToDto(order);
+    }
+
+    public boolean deleteOrderById(long orderId){
+        return orderRepository.delete(orderId);
+    }
 
     private OrderDto mapToDto(Order order) {
         OrderDto dto = new OrderDto();

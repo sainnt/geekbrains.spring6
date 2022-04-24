@@ -22,7 +22,7 @@ CREATE TABLE order_positions
     product_id    BIGSERIAL NOT NULL references products(id),
     amount        INTEGER NOT NULL,
     product_price BIGINT NOT NULL,
-    order_id      BIGSERIAL references orders(id)
+    order_id      BIGSERIAL references orders(id) ON DELETE CASCADE
 );
 
 COMMIT TRANSACTION ;
