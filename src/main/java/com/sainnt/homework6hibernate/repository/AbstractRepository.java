@@ -1,6 +1,5 @@
 package com.sainnt.homework6hibernate.repository;
 
-import com.sainnt.homework6hibernate.entity.Order;
 import com.sainnt.homework6hibernate.exception.DaoException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -16,7 +15,7 @@ import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-public abstract class AbstractRepository <E, ID extends Serializable> {
+public abstract class AbstractRepository<E, ID extends Serializable> {
     private final Class<E> entityClass;
     private final String idPropertyName;
     private final SessionFactory sessionFactory;
@@ -29,51 +28,48 @@ public abstract class AbstractRepository <E, ID extends Serializable> {
         this.idPropertyName = sessionFactory.getMetamodel().entity(this.entityClass).getId(idClass).getName();
     }
 
-    protected void performTransactional(Consumer<Session> daoOperation){
+    protected void performTransactional(Consumer<Session> daoOperation) {
         Session currentSession = sessionFactory.getCurrentSession();
         Transaction transaction = currentSession.getTransaction();
         boolean noActiveTransaction = !transaction.isActive();
-        if(noActiveTransaction)
+        if (noActiveTransaction)
             transaction = currentSession.beginTransaction();
-        try{
+        try {
             daoOperation.accept(currentSession);
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
             transaction.rollback();
             throw new DaoException(e);
         }
-        if(noActiveTransaction)
+        if (noActiveTransaction)
             transaction.commit();
     }
 
-    protected  <T> T  performTransactional(Function<Session,T> daoOperation){
+    protected <T> T performTransactional(Function<Session, T> daoOperation) {
         Session currentSession = sessionFactory.getCurrentSession();
         Transaction transaction = currentSession.getTransaction();
         boolean noActiveTransaction = !transaction.isActive();
-        if(noActiveTransaction)
+        if (noActiveTransaction)
             transaction = currentSession.beginTransaction();
-        try{
+        try {
             T apply = daoOperation.apply(currentSession);
-            if(noActiveTransaction)
+            if (noActiveTransaction)
                 transaction.commit();
             return apply;
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
             transaction.rollback();
             throw new DaoException(e);
         }
 
     }
 
-    public E getById(ID id){
+    public E load(ID id) {
         return performTransactional(
                 session -> {
                     return session.get(entityClass, id);
                 }
         );
     }
+
     public List<E> findAll() {
         return performTransactional(session -> {
             CriteriaBuilder cb = session.getCriteriaBuilder();
@@ -81,6 +77,12 @@ public abstract class AbstractRepository <E, ID extends Serializable> {
             Root<E> root = query.from(entityClass);
             query.select(root);
             return session.createQuery(query).list();
+        });
+    }
+
+    public void save(E entity){
+        performTransactional(session -> {
+            session.save(entity);
         });
     }
 
@@ -94,10 +96,10 @@ public abstract class AbstractRepository <E, ID extends Serializable> {
         return
                 performTransactional(session ->
                 {
-                    CriteriaBuilder cb =  session.getCriteriaBuilder();
+                    CriteriaBuilder cb = session.getCriteriaBuilder();
                     CriteriaDelete<E> query = cb.createCriteriaDelete(entityClass);
                     Root<E> root = query.from(entityClass);
-                    query.where(cb.equal(root.get(idPropertyName),id));
+                    query.where(cb.equal(root.get(idPropertyName), id));
                     return session.createQuery(query).executeUpdate() > 0;
                 });
 

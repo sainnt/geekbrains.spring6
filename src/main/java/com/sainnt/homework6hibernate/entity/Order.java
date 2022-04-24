@@ -20,7 +20,7 @@ public class Order {
     @ToString.Exclude
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "id")
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "id", cascade = CascadeType.ALL)
     private List<OrderPosition> orderPositions;
     @Column(nullable = false)
     private Date date;
